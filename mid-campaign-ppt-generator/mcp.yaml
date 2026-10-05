@@ -1,0 +1,29 @@
+# Catalog card for the Agent Portal. Read from git; nothing here is stored in
+# the portal. Keep wording plain: this is shown to non-technical admins.
+
+name: Mid-campaign report builder
+description: >
+  Turns a mid-campaign Excel workbook into a PowerPoint performance report,
+  with benchmarks and campaign insights.
+version: 0.1.0
+owner: Manikanta Karri
+
+# Databricks App name once deployed (lowercase letters, numbers, dashes).
+# The portal finds the live app by this name; there is no separate record.
+app_name: mcp-mid-campaign-ppt-generator
+
+# What a person sees as "what can this do". Listed before anything is deployed.
+tools:
+  - name: get_mid_campaign_ppt_report
+    description: Reads a campaign Excel file and builds a PowerPoint report from it.
+    changes_data: true     # creates a new file; the source workbook is untouched
+  - name: ping
+    description: Quick health check.
+    changes_data: false
+
+# What has to be in place for it to work.
+needs:
+  secrets: []              # no API keys
+  volumes:                 # app identity needs these on the Unity Catalog volume
+    - read                 # to read the uploaded workbook (volume_path)
+    - write                # only if reports are saved back to a volume (output_volume_dir)

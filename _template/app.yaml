@@ -1,0 +1,5 @@
+command: ['python', 'server.py']
+# Add env entries only for what mcp.yaml lists under needs.secrets, e.g.:
+# env:
+#   - name: JIRA_API_TOKEN
+#     valueFrom: jira-token

@@ -1,55 +1,36 @@
-# mid-campaign-ppt-generator-mcp
+# MCP catalog
 
-Remote MCP server (FastMCP + streamable-HTTP) migrated from the Sema4.ai
-`Mid Campaign PPT Generator action pack`. It reads an uploaded mid-campaign
-Excel workbook, computes campaign performance metrics, and generates a
-PowerPoint (PPTX) report attached back to the requesting thread.
+One folder per MCP server. Each folder deploys on its own as a Databricks App.
+The Agent Portal reads this repo to show the available tools, and deploys a
+folder only when someone picks it.
 
-Deployed to AWS Bedrock AgentCore / EKS. Source agent: **Mid Campaign PDF
-Generator**.
-
-## Tools
-
-| Tool | What it does | Read/mutate |
-| --- | --- | --- |
-| `get_mid_campaign_ppt_report` | Read an uploaded `.xlsx`, compute campaign metrics + benchmarks, generate a PPTX, attach it to the thread. | mutate (creates a new file attachment; never touches the source workbook) |
-| `ping` | Health/smoke check. | read-only |
-
-## Auth — none
-
-This pack is pure local computation (pandas + python-pptx over an uploaded
-workbook, benchmark/KPI-mapping lookups bundled under `standalones/`). No
-secrets, no external API calls, no OAuth. `mcp-server.yaml` declares `env: []`.
-
-## Platform context (thread files)
-
-The tool never takes file bytes as an argument. It resolves the uploaded
-Excel file and attaches the generated PPTX via the Sema4.ai Agent Server's
-thread-file API, using the same `X-Tool-Invocation-Context` header shim as
-the other file-handling servers in this repo (`agent_server_context.py` /
-`agent_server_helper.py`, reused verbatim from `excel-template-filler-mcp`).
-
-## Local commands
-
-```sh
-cd mid-campaign-ppt-generator-mcp
-uv sync
-uv run pytest tests/
-uv run python server.py      # serves /mcp on :8000, GET /ping -> {"status":"Healthy"}
+```
+<mcp-name>/
+  mcp.yaml           catalog card for the portal (name, tools, what it needs)
+  app.yaml           Databricks Apps manifest (how to start it)
+  server.py          the MCP server (streamable HTTP, serves /mcp)
+  requirements.txt   or pyproject.toml
 ```
 
-## Layout
+A folder is in the catalog if it contains `mcp.yaml`. Folders starting with `_`
+(like `_template/`) are ignored.
 
-- `legacy_actions.py` — the source pack's `actions.py`, copied verbatim.
-- `services/` — the pack's verbatim service package (`midcampaign_pdf_service.py`,
-  `get_benchmark_metrics.py`, `get_campaign_insights_data.py`, `get_ppt_report.py`,
-  `get_region.py`, `region_country_mappings.json`).
-- `standalones/` — bundled static data referenced by `services/`
-  (`campaign_kpi_mapping.json`, `Benchmark_2026_Q2.xlsx`,
-  `mid_campaign_pdf_template_v2.pptx`).
-- `sema4ai/` — local shim providing `action`, `Response`, `ActionError`, `chat`.
-- `agent_server_context.py` / `agent_server_helper.py` — shared thread-file
-  platform-context shim (reused verbatim from `excel-template-filler-mcp`).
-- `server.py` — thin typed wrapper over `legacy_actions`.
+## Add an MCP
 
-See `PARITY_REPORT.md` for the full migration record.
+1. Copy `_template/` to a new folder named after the MCP (lowercase, dashes).
+2. Fill in `mcp.yaml`: `app_name`, a plain-English description, and every tool.
+3. Make sure it starts with the command in `app.yaml` and serves MCP at `/mcp`.
+4. Open a pull request. Once merged it shows up in the portal.
+
+## Rules
+
+- **No secrets in the repo.** List the names a deploy needs under `needs.secrets`;
+  they are supplied at deploy time.
+- Keep `mcp.yaml` accurate. It is the only thing the portal shows before deploying.
+- `app_name` must be unique, lowercase letters, numbers and dashes only.
+
+## MCPs
+
+| Folder | What it does |
+| --- | --- |
+| `mid-campaign-ppt-generator` | Builds a PowerPoint report from a campaign Excel workbook |

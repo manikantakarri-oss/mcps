@@ -1,0 +1,17 @@
+name: Short friendly name
+description: >
+  One or two plain sentences on what this does for a non-technical reader.
+version: 0.1.0
+owner: Your name
+
+# Lowercase letters, numbers and dashes. Must be unique.
+app_name: mcp-replace-me
+
+tools:
+  - name: example_tool
+    description: What this tool does, in plain English.
+    changes_data: false    # true if it creates, edits or deletes anything
+
+needs:
+  secrets: []              # names of secrets it needs, e.g. [JIRA_API_TOKEN]
+  volumes: []              # [read], [write] or [read, write] on a Unity Catalog volume
