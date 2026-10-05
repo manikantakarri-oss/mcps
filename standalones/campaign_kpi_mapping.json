@@ -1,0 +1,45 @@
+{
+    "impression": {
+        "display": ["Impressions", "CPM"],
+        "audio": ["Impressions", "CPM"],
+        "video": ["Impressions", "Views"]
+    },
+    "reach": {
+        "display": ["Reach", "CPM"],
+        "audio": ["Reach", "CPM"],
+        "video": ["Reach", "CPM"]
+    },
+    "install": {
+        "display": ["Clicks", "CPC"],
+        "audio": ["Clicks", "CPC"],
+        "video": ["Clicks", "CPC"]
+    },
+    "click": {
+        "display": ["Clicks", "CPC"],
+        "audio": ["Clicks", "CPC"],
+        "video": ["Clicks", "CPC"]
+    },
+    "page view": {
+        "display": ["Pageviews", "CPC"],
+        "audio": ["Pageviews", "CPC"],
+        "video": ["Pageviews", "CPC"]
+    },
+    "view": {
+        "display": [ "Pageviews", "CPC"],
+        "audio": [ "Pageviews", "CPC"],
+        "video": [ "Pageviews", "CPC"]
+    },
+    "stream": {
+        "video": ["Completion Rate", "CPM"],
+        "audio": ["Completion Rate", "CPM"]
+    },
+    "video view": {
+        "video": ["Views", "Completion Rate"]
+    },
+    "lead_gen": {
+        "display": ["Clicks", "CPC"],
+        "audio": ["Clicks", "CPC"],
+        "video": ["Clicks", "CPC"]
+    }
+
+}

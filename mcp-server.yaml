@@ -1,0 +1,20 @@
+# Presence of this file marks the folder as an MCP server to deploy to
+# Bedrock AgentCore. The CI workflow reads it to build the Terraform `servers`
+# entry. The folder must also contain a Dockerfile that serves MCP on
+# 0.0.0.0:8000/mcp (stateless) and a GET /ping health route.
+runtime_name: mid_campaign_ppt_generator_mcp   # AgentCore runtime name: [a-zA-Z][a-zA-Z0-9_]{0,47}
+protocol: MCP
+network_mode: PUBLIC                            # pure local Excel/PPTX processing; no external calls
+scope: invoke                                   # Cognito M2M scope -> "<folder>/invoke"
+
+# This pack is pure deterministic logic (pandas + python-pptx over an
+# uploaded Excel workbook) — no secrets, no external API calls.
+env: []
+
+# --- EKS deployment (deploy-mcp-servers-eks.yml) ---------------------------
+# miadev env: deployed to the mm-sema4-test cluster in namespace
+# mcp-servers-miadev (separate from mia-test). Host is env-suffixed so it does
+# not collide with the same server on other envs sharing the cluster/NLB.
+eks:
+  host: mid-campaign-ppt-generator-mcp-miaprod.mediamint.com
+  expose: gated            # gated=basic-auth | public=forward-bearer (no gate) | internal=no ingress

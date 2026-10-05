@@ -1,0 +1,24 @@
+[project]
+name = "mcp-mid-campaign-ppt-generator"
+version = "0.1.0"
+description = "FastMCP remote MCP migration of the Sema4 mid-campaign-ppt-generator action pack (Excel campaign data -> PPTX report)"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+    "fastmcp>=2.3",
+    "pydantic>=2",
+    "boto3>=1.34",
+    "databricks-sdk>=0.30",
+    "sema4ai-api-client",
+    "pandas>=2.3,<2.4",
+    "python-pptx",
+    "openpyxl",
+    "numpy",
+    "pillow>=10.2,<10.3",
+    "reportlab",
+    "fastapi",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+]

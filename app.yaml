@@ -1,0 +1,9 @@
+# Databricks Apps runtime config. This pack needs no secrets (pure local
+# Excel -> PPTX generation), so no `env`/`valueFrom` entries are required.
+#
+# Run the script directly rather than via a `[project.scripts]` entry point —
+# uv only installs console-script entry points when the project has a
+# `[build-system]` table (it builds/installs the project as a package to get
+# them); this pyproject.toml has none, so `uv run custom-server` fails with
+# "Failed to spawn: custom-server".
+command: ['uv', 'run', 'python', 'server.py']
