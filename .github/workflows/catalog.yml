@@ -1,0 +1,70 @@
+# Check the catalog on every change; publish a version on a tag.
+#
+# Clients never read main: the Portal Deployer ships each client the MCPs it is
+# entitled to, from a pinned catalog version. Push a tag (git tag v1.1.0 &&
+# git push origin v1.1.0): the checks run against that tag, and only if they
+# pass is it published as a release the deployer can offer.
+name: Catalog
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*.*.*"]
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install pyyaml
+      - name: Every MCP has a valid card and an app manifest
+        shell: python
+        run: |
+          import os, re, sys, yaml
+          problems, apps = [], {}
+          for d in sorted(os.listdir(".")):
+              if d.startswith((".", "_")) or not os.path.isdir(d) or not os.path.exists(os.path.join(d, "mcp.yaml")):
+                  continue
+              if not re.fullmatch(r"[a-z0-9][a-z0-9-]{0,60}", d):
+                  problems.append(f"{d}: folder names use lowercase letters, digits and dashes")
+              try:
+                  card = yaml.safe_load(open(os.path.join(d, "mcp.yaml"))) or {}
+              except yaml.YAMLError as e:
+                  problems.append(f"{d}: mcp.yaml is not valid YAML ({e})"); continue
+              if not isinstance(card, dict):
+                  problems.append(f"{d}: mcp.yaml must be a mapping"); continue
+              for key in ("name", "description"):
+                  if not str(card.get(key) or "").strip():
+                      problems.append(f"{d}: mcp.yaml needs a {key}")
+              if not isinstance(card.get("tools"), list) or not card["tools"]:
+                  problems.append(f"{d}: mcp.yaml must list its tools")
+              if not any(os.path.exists(os.path.join(d, f)) for f in ("app.yaml", "app.yml")):
+                  problems.append(f"{d}: app.yaml is missing, so it cannot run as a Databricks App")
+              app = str(card.get("app_name") or "mcp-" + d)
+              if app in apps:
+                  problems.append(f"{d}: app name {app} is also used by {apps[app]}")
+              apps[app] = d
+          print("\n".join(problems) or f"{len(apps)} MCPs checked, all valid")
+          sys.exit(1 if problems else 0)
+
+  release:
+    needs: check
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Publish the catalog version
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          echo "$TAG" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.]+)?$' || { echo "::error::$TAG is not vX.Y.Z"; exit 1; }
+          pre=""; case "$TAG" in *-*) pre="--prerelease" ;; esac
+          gh release create "$TAG" --verify-tag --generate-notes --title "MCP catalog $TAG" $pre

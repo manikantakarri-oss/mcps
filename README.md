@@ -36,3 +36,16 @@ A folder is in the catalog if it contains `mcp.yaml`. Folders starting with `_`
 | Folder | What it does |
 | --- | --- |
 | `mid-campaign-ppt-generator` | Builds a PowerPoint report from a campaign Excel workbook |
+
+## Releasing
+
+Clients never get `main`. The Portal Deployer pins each client to a catalog
+version and ships them only the MCPs they are entitled to.
+
+1. Merge to `main`. The **Catalog** check validates every `mcp.yaml` and `app.yaml`.
+2. When ready for clients, tag a version: `git tag v1.1.0 && git push origin v1.1.0`.
+   The checks run again on that tag and, if they pass, the version is published.
+3. In the Portal Deployer, clients set to "newest version" get it on their next
+   deploy; clients pinned to an older version keep it until you change them.
+
+A version tag is never moved or reused: fix forward with the next number.
