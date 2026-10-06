@@ -1,0 +1,31 @@
+# Catalog card for the Agent Portal. Shown to non-technical admins: keep it plain.
+name: GAM media planner
+description: >
+  Builds media plans from a budget and dates using the client's Google Ad
+  Manager: finds positions, checks available impressions and typical prices,
+  and spreads the budget, with an Excel download.
+version: 0.1.0
+owner: Manikanta Karri
+
+tools:
+  - name: find_inventory
+    description: Finds positions (ad units) and their sizes in Google Ad Manager.
+    changes_data: false
+  - name: get_rate_card
+    description: Typical prices by cost method, from what was sold in the network.
+    changes_data: false
+  - name: check_availability
+    description: Available impressions for each position in a flight.
+    changes_data: false
+  - name: create_media_plan
+    description: Turns a budget and dates into a plan table across positions.
+    changes_data: false
+  - name: export_media_plan
+    description: Saves a plan as an Excel file in the results folder.
+    changes_data: true     # writes a new file; nothing in Google Ad Manager changes
+
+# What has to be in place. The Portal Deployer's GAM connection stores both in
+# the client's own Databricks secret scope; the portal gives them to this app.
+needs:
+  secrets: [gam-key, gam-network]
+  volumes: [write]         # to save the Excel plan to the results folder

@@ -1,0 +1,8 @@
+command: ['python', 'server.py']
+# Both come from the client's Databricks secret scope, attached to this app as
+# resources named like the entries in mcp.yaml needs.secrets.
+env:
+  - name: GAM_KEY_JSON
+    valueFrom: gam-key
+  - name: GAM_NETWORK_CODE
+    valueFrom: gam-network
