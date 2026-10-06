@@ -8,9 +8,10 @@ description: >
 version: 0.1.0
 owner: Manikanta Karri
 
-# Databricks App name once deployed (lowercase letters, numbers, dashes).
-# The portal finds the live app by this name; there is no separate record.
-app_name: mcp-mid-campaign-ppt-generator
+# Optional. By default the Databricks App is called "mcp-" + this folder name
+# (mcp-mid-campaign-ppt-generator), and the portal finds the live app by that
+# name. Set app_name only if the app already exists under a different name.
+# app_name: your-existing-app-name
 
 # What a person sees as "what can this do". Listed before anything is deployed.
 tools:

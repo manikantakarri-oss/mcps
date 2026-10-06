@@ -4,8 +4,9 @@ description: >
 version: 0.1.0
 owner: Your name
 
-# Lowercase letters, numbers and dashes. Must be unique.
-app_name: mcp-replace-me
+# Optional: the Databricks App is called "mcp-" + the folder name unless you
+# set app_name here (lowercase letters, numbers, dashes).
+# app_name: mcp-something
 
 tools:
   - name: example_tool

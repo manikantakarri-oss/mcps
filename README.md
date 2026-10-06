@@ -18,7 +18,7 @@ A folder is in the catalog if it contains `mcp.yaml`. Folders starting with `_`
 ## Add an MCP
 
 1. Copy `_template/` to a new folder named after the MCP (lowercase, dashes).
-2. Fill in `mcp.yaml`: `app_name`, a plain-English description, and every tool.
+2. Fill in `mcp.yaml`: a plain-English description and every tool.
 3. Make sure it starts with the command in `app.yaml` and serves MCP at `/mcp`.
 4. Open a pull request. Once merged it shows up in the portal.
 
@@ -27,7 +27,9 @@ A folder is in the catalog if it contains `mcp.yaml`. Folders starting with `_`
 - **No secrets in the repo.** List the names a deploy needs under `needs.secrets`;
   they are supplied at deploy time.
 - Keep `mcp.yaml` accurate. It is the only thing the portal shows before deploying.
-- `app_name` must be unique, lowercase letters, numbers and dashes only.
+- The Databricks App is named `mcp-<folder>`, so folder names must be unique,
+  lowercase letters, numbers and dashes only. Set `app_name` in `mcp.yaml` only
+  to match an app that already exists under another name.
 
 ## MCPs
 
